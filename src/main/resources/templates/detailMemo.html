@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/summernote-lite.css" />
+    <link rel="stylesheet" href="/css/globals.css" />
+    <link rel="stylesheet" href="/css/styleguide.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/test.css" />
+    <link rel="stylesheet" href="/css/addbutton.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- 서머노트를 위해 추가-->
+    <script src="/js/summernote-lite.js"></script>
+    <script src="/js/summernote-ko-KR.js"></script>
+
+    <title>Metion</title>
+</head>
+<body>
+<div class="desktop">
+    <div class="div">
+        <div class="overlap-group">
+            <div class="rectangle"></div>
+            <nav th:replace="~{sidebar :: sidebar}"></nav>
+        </div>
+        <div class="leftmargin">
+
+            <div class="button-group" >
+                <form th:action="@{/detailMemo/{id}(id=${item.id})}" method="POST" onsubmit="return confirm('정말 저장하시겠습니까?');">
+                    <input type="hidden" id="hidden_id" name="id" th:value="${item.id}">
+                    <input type="hidden" id="hidden_content" name="content" th:value="${item.content}">
+                    <input type="hidden" name="videourl" id="videourl">
+                    <input type="hidden" name="audiourl" id="audiourl">
+                    <input type="hidden" name="fileName" id="fileName">
+                    <input type="hidden" name="fileType" id="fileType">
+                    <input type="hidden" name="url" id="url">
+
+                    <input type="text" id="title" name="title" class="main-title" required th:value="${item.title}">
+                    <button type="submit" class="save-button">저장</button>
+                    <div class="container">
+                        <textarea class="summernote" name="editordata" th:text="${item.content}"></textarea>
+                    </div>
+                    <script>
+                        $('.summernote').summernote({
+                            height: 500,
+                            lang: "ko-KR",
+                            focus: true,
+                            toolbar: [
+                                ['fontname', ['fontname']],
+                                ['fontsize', ['fontsize']],
+                                ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                                ['color', ['forecolor', 'color']],
+                                ['table', ['table']],
+                                ['para', ['ul', 'ol', 'paragraph']],
+                                ['height', ['height']],
+                                ['insert', ['picture', 'link', 'video']],
+                                ['view', ['codeview', 'fullscreen', 'help']]
+                            ],
+                            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', '맑은 고딕', '궁서', '굴림체', '굴림', '돋음체', '바탕체'],
+                            fontSizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '50', '72'],
+                            callbacks: {
+                                onImageUpload: function(files) {
+                                    for (var i = files.length - 1; i >= 0; i--) {
+                                        uploadSummernoteImageFile(files[i]);
+                                    }
+                                },
+                                onMediaDelete : function(target) {
+                                    deleteMedia(target[0].src); // 비디오 삭제 호출
+                                }
+                            }
+                        });
+
+                        function uploadSummernoteImageFile(file) {
+                            var data = new FormData();
+                            data.append("file", file);
+                            $.ajax({
+                                data: data,
+                                type: "POST",
+                                url: "/uploadSummernoteImageFile", // 서버의 이미지 업로드 엔드포인트
+                                contentType: false,
+                                processData: false,
+                                success: function(data) {
+                                    $('.summernote').summernote('insertImage', data.url); // 서버에서 반환된 이미지 URL 삽입
+                                }
+                            });
+                        }
+                        // 드래그 앤 드롭 기능 추가
+                        $("div.note-editable").on('drop', function(e) {
+                            for (var i = 0; i < e.originalEvent.dataTransfer.files.length; i++) {
+                                uploadSummernoteImageFile(e.originalEvent.dataTransfer.files[i]);
+                            }
+                            e.preventDefault();
+                        });
+
+                        function deleteMedia(src) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/deleteMedia", // 서버의 미디어 삭제 엔드포인트
+                                data: { src: src },
+                                success: function(response) {
+                                    console.log("미디어 삭제 성공:", response);
+                                }
+                            });
+                        }
+
+                        function uploadSummernoteVideoFile(file) {
+                            var data = new FormData();
+                            data.append("file", file);
+                            $.ajax({
+                                data: data,
+                                type: "POST",
+                                url: "/uploadSummernoteVideoFile", // 서버의 비디오 업로드 엔드포인트
+                                contentType: false,
+                                processData: false,
+                                success: function(data) {
+                                    $('.summernote').summernote('insertVideo', data.url); // 서버에서 반환된 비디오 URL 삽입
+                                }
+                            });
+                        }
+
+                    </script>
+
+                </form>
+                <form style="text-align: center" th:action="@{/deleteItem/{id}(id=${item.id})}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <button type="submit" class="delete-button">삭제</button>
+                </form>
+            </div>
+            <div>
+                <!-- 영상 업로드 버튼 -->
+                <form style="text-align: center" id="videoUploadForm" enctype="multipart/form-data">
+                    <input type="file" id="videoUpload" accept="video/*">
+                </form>
+
+                <!-- 영상 미리보기가 표시될 div -->
+                <div id="videoPreview" style="text-align: center">
+                    <video controls th:src="${item.videourl}" type="video/mp4" />
+                </div>
+            </div>
+
+            <script>
+                $('#videoUpload').on('change', function(event) {
+                    var file = event.target.files[0];
+                    if (file) {
+                        var formData = new FormData();
+                        formData.append('file', file);
+
+                        $.ajax({
+                            url: '/uploadSummernoteVideoFile',
+                            type: 'POST',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function(response) {
+                                var videoUrl = response.url;
+                                $('#videoPreview').html(`<video width="30%" height="25%" controls>
+                                                            <source src="${videoUrl}" type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>`);
+                                $('#videourl').val(videoUrl); // 비디오 URL 저장
+                            },
+                            error: function(error) {
+                                console.error("비디오 업로드 실패:", error);
+                            }
+                        });
+                    }
+                });
+            </script>
+
+            <div>
+                <!-- 오디오 업로드 버튼 -->
+                <form style="text-align: center" id="audioUploadForm" enctype="multipart/form-data">
+                    <input type="file" id="audioUpload" name="audioUpload" accept="audio/*">
+                </form>
+
+                <!-- 오디오 미리보기가 표시될 div -->
+                <div id="audioPreview" style="text-align: center">
+                    <audio controls th:src="${item.audiourl}" type="audio/wav" />
+                </div>
+            </div>
+
+            <script>
+                $('#audioUpload').on('change', function(event) {
+                    var file = event.target.files[0];
+                    if (file) {
+                        var formData = new FormData();
+                        formData.append('file', file);
+
+                        $.ajax({
+                            url: '/uploadSummernoteAudioFile',
+                            type: 'POST',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function(response) {
+                                var audioUrl = response.url;
+                                $('#audioPreview').html(`<audio width="35%" controls>
+                                                            <source src="${audioUrl}" type="${file.type}">
+                                                            Your browser does not support the audio tag.
+                                                        </audio>`);
+                                $('#audiourl').val(audioUrl); // 오디오 URL 저장
+                            },
+                            error: function(error) {
+                                console.error("오디오 업로드 실패:", error);
+                            }
+                        });
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

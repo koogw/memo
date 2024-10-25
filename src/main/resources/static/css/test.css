@@ -1,0 +1,127 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f7f7f8;
+  color: #37352f;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background-color: #ffffff;
+  border-right: 1px solid #e3e3e3;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar .title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #37352f;
+  margin-bottom: 10px;
+}
+
+.sidebar .section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .section .header {
+  font-size: 14px;
+  font-weight: bold;
+  color: #787774;
+  margin-bottom: 5px;
+}
+
+.sidebar .section .item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.sidebar .section .item:hover {
+  background-color: #f3f3f3;
+}
+
+.sidebar .section .item .title {
+  font-size: 16px;
+  color: #37352f;
+  margin-left: 10px;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 300px;
+  padding: 40px;
+}
+
+.main-content h1 {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.main-content .editor {
+  background-color: #ffffff;
+  padding: 20px;
+  border: 1px solid #e3e3e3;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 200px;
+}
+
+.editor .toolbar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.toolbar button {
+  background-color: #f7f7f8;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.toolbar button:hover {
+  background-color: #e3e3e3;
+}
+
+/* Buttons */
+button {
+  background-color: #2d2e2e;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4d4d4d;
+}
+
+/* Media Preview */
+#videoPreview, #audioPreview {
+  margin-top: 20px;
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/globals.css" />
+    <link rel="stylesheet" href="/css/styleguide.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/png" href="https://ckeditor.com/assets/images/favicons/32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://ckeditor.com/assets/images/favicons/96x96.png" sizes="96x96">
+    <link rel="apple-touch-icon" type="image/png" href="https://ckeditor.com/assets/images/favicons/120x120.png" sizes="120x120">
+    <link rel="apple-touch-icon" type="image/png" href="https://ckeditor.com/assets/images/favicons/152x152.png" sizes="152x152">
+    <link rel="apple-touch-icon" type="image/png" href="https://ckeditor.com/assets/images/favicons/167x167.png" sizes="167x167">
+    <link rel="apple-touch-icon" type="image/png" href="https://ckeditor.com/assets/images/favicons/180x180.png" sizes="180x180">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css">
+
+    <title>Metion</title>
+</head>
+<body>
+<div class="desktop">
+    <div class="div">
+        <div class="overlap-group">
+            <div class="rectangle"></div>
+            <nav th:replace="~{sidebar.html :: sidebar}"></nav>
+        </div>
+        <form action="addMemo" method="POST">
+            <div class="text-wrapper-4">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="form-control">
+            </div>
+            <div class="text-wrapper-4">
+                <div class="main-container">
+                    <div class="editor-container editor-container_balloon-editor editor-container_include-block-toolbar" id="editor-container">
+                        <div class="editor-container__editor"><div id="editor"></div></div>
+                    </div>
+                </div>
+            </div>
+            <script type="importmap">
+                {
+                    "imports": {
+                        "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.js",
+                        "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.2.0/"
+                    }
+                }
+            </script>
+            <script type="module" src="/js/main.js"></script>
+            <script>
+                window.onload = function() {
+                    if ( window.location.protocol === "file:" ) {
+                        alert( "This sample requires an HTTP server. Please serve this file with a web server." );
+                    }
+                };
+            </script>
+
+            <button type="submit" class="text-wrapper-4">추가</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
